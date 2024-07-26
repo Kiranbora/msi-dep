@@ -1,0 +1,16 @@
+build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Create binary from branch
+        run: |
+          choco install make
+          make build-windows
+      - name: Generate msi
+        shell: powershell
+        run: .\.github\scripts\windows\gen-win.ps1
+      - name: Install msi
+        run: |
+          echo "Start Msiexec"
+          msiexec /qn /i "file.msi" /L*vx!
+          echo "End Msiexec"
