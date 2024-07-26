@@ -1,0 +1,49 @@
+name: Build and Deploy MSI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup WiX Toolset
+      run: |
+        choco install wix --version=3.11.2
+        export PATH=$PATH:"/c/Program Files (x86)/WiX Toolset v3.11/bin"
+
+    - name: Build MSI
+      run: |
+        candle.exe -out MyApp.wixobj MyApp.wxs
+        light.exe -out MyApp.msi MyApp.wixobj
+
+    - name: Upload MSI as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: MyApp-MSI
+        path: MyApp.msi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Download MSI Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: MyApp-MSI
+
+    - name: Copy MSI via SSH
+      uses: appleboy/scp-action@v0.1.1
+      with:
+        host: ${{ secrets.DEPLOYMENT_SERVER_IP }}
+        username: ${{ secrets.DEPLOYMENT_SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: "MyApp.msi"
+        target: "/path/to/deployment/folder"
