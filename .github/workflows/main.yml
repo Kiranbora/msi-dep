@@ -22,6 +22,7 @@ jobs:
         service_account_key: ${{secrets.GOOGLE_APP_CRED}}
       - name: push the artifact to GCP
         env:
+        runs : ${{secerts.GOOGLE_APP_CRED}}
           GOOGLE_PROJECT: ${{gcloud artifacts generic upload --source=
             https://github.com/Kiranbora/msi-dep/blob/main/MSIDemo.22.0.0.43559.nupkg
             --project=$GOOGLE_PROJECT --location=$gcpRegion
