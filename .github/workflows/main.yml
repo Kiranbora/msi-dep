@@ -20,7 +20,7 @@ jobs:
         with: null
         project_id: ${{secrets.GOOGLE_PROJECT}}
         service_account_key: ${{secrets.GOOGLE_APP_CRED}}
-      - name: push the artifact to GCP
+    #  - name: push the artifact to GCP
         env:
         keys : ${{secrets.GOOGLE_APP_CRED}}
         runs : ${{GOOGLE_PROJECT:${{secrets.GOOGLE_PROJECT}} --source=
