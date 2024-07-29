@@ -19,11 +19,15 @@ jobs:
         Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
  
-  # - name : install google cli
+  - name : install google cli
      uses : google-github-actions/setup-gcloud@vo
      with :
       project_id: ${{secrets.GOOGLE_PROJECT}}
-      service_account_key: ${{secrets.GOOGLE_APP_CRED}}
+      service_account_key: ${{secrets.GOOGLE_APP_CRED}} 
+
+  - name : push the artifact to GCP
+    env : 
+      GOOGLE_PROJECT : ${{gcloud artifacts generic upload --source= https://github.com/Kiranbora/msi-dep/blob/main/MSIDemo.22.0.0.43559.nupkg --project=$GOOGLE_PROJECT --location=$gcpRegion --repository=$gcpRepository --package=$packageName --version=$packageVersion}}
 
       
       
