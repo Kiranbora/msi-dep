@@ -13,24 +13,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Setup WiX Toolset
+    - name: Setup Choco package 
       run: |
-        choco install wix --version=3.11.2
-        export PATH=$PATH:"/c/Program Files (x86)/WiX Toolset v3.11/bin"
+        Set-ExecutionPolicy Bypass -Scope Process
+        Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-    - name: Build MSI
+  # - name: Build MSI
       run: |
         candle.exe -out MyApp.wixobj MyApp.wxs
         light.exe -out MyApp.msi MyApp.wixobj
 
-    - name: Upload MSI as Artifact
+  # - name: Upload MSI as Artifact
       uses: actions/upload-artifact@v2
       with:
         name: MyApp-MSI
         path: MyApp.msi
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
 
     steps:
