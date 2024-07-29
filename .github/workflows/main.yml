@@ -23,8 +23,7 @@ jobs:
       - name: push the artifact to GCP
         env:
         uses : ${{secrets.GOOGLE_APP_CRED}}
-        run : ${{GOOGLE_PROJECT:${{secrets.GOOGLE_PROJECT}} --source=
-            https://github.com/Kiranbora/msi-dep/blob/main/MSIDemo.22.0.0.43559.nupkg
+        run : ${{GOOGLE_PROJECT:${{secrets.GOOGLE_PROJECT}} --source =
             --project=${{secrets.GOOGLE_APP_CRED}} --location=$gcpRegion
             --repository=$gcpRepository --package=MSIDemo
             --version=MSIDemo.22.0.0.43559}}
