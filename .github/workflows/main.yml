@@ -18,32 +18,4 @@ jobs:
         Set-ExecutionPolicy Bypass -Scope Process
         Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
-  # - name: Build MSI
-      run: |
-        candle.exe -out MyApp.wixobj MyApp.wxs
-        light.exe -out MyApp.msi MyApp.wixobj
-
-  # - name: Upload MSI as Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: MyApp-MSI
-        path: MyApp.msi
-
-  deploy:
-    runs-on: windows-latest
-    needs: build
-
-    steps:
-    - name: Download MSI Artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: MyApp-MSI
-
-    - name: Copy MSI via SSH
-      uses: appleboy/scp-action@v0.1.1
-      with:
-        host: ${{ secrets.DEPLOYMENT_SERVER_IP }}
-        username: ${{ secrets.DEPLOYMENT_SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "MyApp.msi"
-        target: "/path/to/deployment/folder"
+ 
